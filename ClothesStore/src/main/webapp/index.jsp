@@ -1,12 +1,38 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="com.clothesstore.model.User" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>ClothesStore</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        nav a { margin-right: 15px; }
+    </style>
 </head>
 <body>
+    <%
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+    %>
+
     <h1>Welcome to ClothesStore</h1>
-    <p><a href="<%= request.getContextPath() %>/products">View Products</a></p>
+
+    <nav>
+        <a href="<%= request.getContextPath() %>/products">View Products</a>
+
+        <%
+            if (loggedInUser == null) {
+        %>
+            <a href="<%= request.getContextPath() %>/login">Login</a>
+            <a href="<%= request.getContextPath() %>/register">Register</a>
+        <%
+            } else {
+        %>
+            <span>Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)</span>
+            <a href="<%= request.getContextPath() %>/logout">Logout</a>
+        <%
+            }
+        %>
+    </nav>
 </body>
 </html>
