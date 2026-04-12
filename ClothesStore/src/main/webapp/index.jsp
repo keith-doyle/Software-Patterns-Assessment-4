@@ -7,7 +7,7 @@
     <title>ClothesStore</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; }
-        nav a { margin-right: 15px; }
+        nav a, nav span { margin-right: 15px; }
     </style>
 </head>
 <body>
@@ -29,6 +29,15 @@
             } else {
         %>
             <span>Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)</span>
+
+            <%
+                if ("ADMIN".equals(loggedInUser.getRole())) {
+            %>
+                <a href="<%= request.getContextPath() %>/admin/products">Admin Products</a>
+            <%
+                }
+            %>
+
             <a href="<%= request.getContextPath() %>/logout">Logout</a>
         <%
             }
