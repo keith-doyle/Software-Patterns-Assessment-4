@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.clothesstore.model.Product" %>
+<%@ page import="com.clothesstore.model.User" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +17,7 @@
             margin-bottom: 20px;
         }
 
-        form {
+        form.filter-form {
             margin-bottom: 30px;
             padding: 15px;
             border: 1px solid #ccc;
@@ -50,13 +51,16 @@
             font-weight: bold;
             font-size: 20px;
         }
+
+        .cart-form {
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Product Catalogue</h1>
-
     <%
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
         String selectedTitle = (String) request.getAttribute("selectedTitle");
         String selectedCategory = (String) request.getAttribute("selectedCategory");
         String selectedManufacturer = (String) request.getAttribute("selectedManufacturer");
@@ -66,7 +70,9 @@
         List<String> manufacturers = (List<String>) request.getAttribute("manufacturers");
     %>
 
-    <form method="get" action="<%= request.getContextPath() %>/products">
+    <h1>Product Catalogue</h1>
+
+    <form class="filter-form" method="get" action="<%= request.getContextPath() %>/products">
         <label>Title:</label>
         <input type="text" name="title" value="<%= selectedTitle != null ? selectedTitle : "" %>">
 
@@ -128,6 +134,17 @@
             <div class="product-meta">Stock: <%= product.getStockQuantity() %></div>
             <div class="product-meta">Rating: <%= product.getAverageRating() %></div>
             <div class="product-price">€<%= product.getPrice() %></div>
+
+            <%
+                if (loggedInUser != null && "CUSTOMER".equals(loggedInUser.getRole())) {
+            %>
+                <form class="cart-form" method="post" action="<%= request.getContextPath() %>/cart/add">
+                    <input type="hidden" name="productId" value="<%= product.getProductId() %>">
+                    <button type="submit">Add to Cart</button>
+                </form>
+            <%
+                }
+            %>
         </div>
     <%
             }

@@ -36,6 +36,11 @@
                 <a href="<%= request.getContextPath() %>/admin/products">Admin Products</a>
             <%
                 }
+                if ("CUSTOMER".equals(loggedInUser.getRole())) {
+            %>
+                <a href="<%= request.getContextPath() %>/cart">My Cart</a>
+            <%
+                }
             %>
 
             <a href="<%= request.getContextPath() %>/logout">Logout</a>
