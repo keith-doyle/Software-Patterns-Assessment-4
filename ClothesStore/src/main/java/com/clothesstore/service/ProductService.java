@@ -57,4 +57,8 @@ public class ProductService {
     public List<String> getAllManufacturers() {
         return productDAO.getAllManufacturers();
     }
+    
+    public Product getActiveProductById(int productId) {
+        return productDAO.getActiveProductById(productId);
+    }
 }

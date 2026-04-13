@@ -275,6 +275,35 @@ public class ProductDAO {
 
         return -1;
     }
+    
+    public Product getActiveProductById(int productId) {
+        String sql = """
+            SELECT p.product_id, p.title, p.description, p.price, p.stock_quantity,
+                   p.image_path, c.name AS category_name, m.name AS manufacturer_name,
+                   p.average_rating, p.active
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id
+            WHERE p.product_id = ? AND p.active = TRUE
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, productId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return mapRowToProduct(rs);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     private Product mapRowToProduct(ResultSet rs) throws Exception {
         Product product = new Product();
