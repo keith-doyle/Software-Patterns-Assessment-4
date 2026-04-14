@@ -50,6 +50,10 @@ public class ProductService {
         return productDAO.deleteProduct(productId);
     }
 
+    public boolean reduceStock(int productId, int quantity) {
+        return productDAO.reduceStock(productId, quantity);
+    }
+    
     public List<String> getAllCategories() {
         return productDAO.getAllCategories();
     }

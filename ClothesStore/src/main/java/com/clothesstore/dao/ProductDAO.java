@@ -196,6 +196,29 @@ public class ProductDAO {
         return false;
     }
 
+    public boolean reduceStock(int productId, int quantity) {
+        String sql = """
+            UPDATE products
+            SET stock_quantity = stock_quantity - ?
+            WHERE product_id = ? AND stock_quantity >= ?
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, quantity);
+            statement.setInt(2, productId);
+            statement.setInt(3, quantity);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
     public List<String> getAllCategories() {
         List<String> categories = new ArrayList<>();
         String sql = "SELECT name FROM categories ORDER BY name ASC";
