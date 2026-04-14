@@ -29,14 +29,16 @@
         form.inline {
             display: inline;
         }
-        a.button {
+        a.button, button.checkout-btn {
             display: inline-block;
             margin-top: 20px;
             padding: 10px 14px;
             background: #1e88e5;
             color: white;
             text-decoration: none;
+            border: none;
             border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -84,6 +86,10 @@
         </table>
 
         <div class="total">Total: €<%= total %></div>
+
+        <form method="post" action="<%= request.getContextPath() %>/checkout">
+            <button class="checkout-btn" type="submit">Checkout</button>
+        </form>
     <%
         } else {
     %>
