@@ -1,6 +1,10 @@
 package com.clothesstore.model;
 
+import com.clothesstore.pattern.state.OrderState;
+import com.clothesstore.pattern.state.OrderStateFactory;
+
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Order {
     private int orderId;
@@ -50,5 +54,17 @@ public class Order {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public OrderState getStateObject() {
+        return OrderStateFactory.fromString(status);
+    }
+
+    public List<String> getAllowedTransitions() {
+        return getStateObject().getAllowedTransitions();
+    }
+
+    public boolean canTransitionTo(String newStatus) {
+        return getAllowedTransitions().contains(newStatus);
     }
 }

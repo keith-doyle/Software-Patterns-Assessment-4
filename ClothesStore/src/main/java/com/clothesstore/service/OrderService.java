@@ -2,6 +2,7 @@ package com.clothesstore.service;
 
 import com.clothesstore.dao.OrderDAO;
 import com.clothesstore.model.CartItem;
+import com.clothesstore.model.Order;
 import com.clothesstore.model.OrderItem;
 
 import java.util.ArrayList;
@@ -52,5 +53,27 @@ public class OrderService {
         }
 
         return orderId;
+    }
+
+    public List<Order> getOrdersByUserId(int userId) {
+        return orderDAO.getOrdersByUserId(userId);
+    }
+
+    public List<Order> getAllOrders() {
+        return orderDAO.getAllOrders();
+    }
+
+    public boolean updateOrderStatus(int orderId, String newStatus) {
+        Order order = orderDAO.getOrderById(orderId);
+
+        if (order == null) {
+            return false;
+        }
+
+        if (!order.canTransitionTo(newStatus)) {
+            return false;
+        }
+
+        return orderDAO.updateOrderStatus(orderId, newStatus);
     }
 }
