@@ -65,4 +65,12 @@ public class ProductService {
     public Product getActiveProductById(int productId) {
         return productDAO.getActiveProductById(productId);
     }
+    
+    public boolean updateAverageRating(int productId, double averageRating) {
+        return productDAO.updateAverageRating(productId, averageRating);
+    }
+
+    public double getAverageRatingFromReviews(int productId) {
+        return productDAO.getAverageRatingFromReviews(productId);
+    }
 }

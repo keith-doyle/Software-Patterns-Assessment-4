@@ -327,6 +327,52 @@ public class ProductDAO {
 
         return null;
     }
+    public boolean updateAverageRating(int productId, double averageRating) {
+        String sql = """
+            UPDATE products
+            SET average_rating = ?
+            WHERE product_id = ?
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setDouble(1, averageRating);
+            statement.setInt(2, productId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public double getAverageRatingFromReviews(int productId) {
+        String sql = """
+            SELECT AVG(rating) AS avg_rating
+            FROM reviews
+            WHERE product_id = ?
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, productId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("avg_rating");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0.0;
+    }  
 
     private Product mapRowToProduct(ResultSet rs) throws Exception {
         Product product = new Product();
