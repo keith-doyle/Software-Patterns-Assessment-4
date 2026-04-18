@@ -2,6 +2,7 @@ package com.clothesstore.controller;
 
 import com.clothesstore.model.CartItem;
 import com.clothesstore.model.User;
+import com.clothesstore.service.OrderService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,8 @@ import java.util.List;
 
 @WebServlet("/cart")
 public class ViewCartServlet extends HttpServlet {
+
+    private final OrderService orderService = new OrderService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,13 +34,17 @@ public class ViewCartServlet extends HttpServlet {
             session.setAttribute("cart", cart);
         }
 
-        double total = 0.0;
-        for (CartItem item : cart) {
-            total += item.getSubtotal();
-        }
+        double subtotal = orderService.calculateCartSubtotal(cart);
+        double finalTotal = orderService.calculateDiscountedTotal(loggedInUser.getUserId(), cart);
+        double discountAmount = subtotal - finalTotal;
+        String discountDescription = orderService.getDiscountDescription(loggedInUser.getUserId());
 
         request.setAttribute("cart", cart);
-        request.setAttribute("total", total);
+        request.setAttribute("subtotal", subtotal);
+        request.setAttribute("discountAmount", discountAmount);
+        request.setAttribute("finalTotal", finalTotal);
+        request.setAttribute("discountDescription", discountDescription);
+
         request.getRequestDispatcher("/WEB-INF/views/cart.jsp").forward(request, response);
     }
 }
