@@ -21,10 +21,9 @@
         th {
             background-color: #f2f2f2;
         }
-        .total {
+        .summary {
             margin-top: 20px;
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 18px;
         }
         form.inline {
             display: inline;
@@ -47,7 +46,10 @@
 
     <%
         List<CartItem> cart = (List<CartItem>) request.getAttribute("cart");
-        Double total = (Double) request.getAttribute("total");
+        Double subtotal = (Double) request.getAttribute("subtotal");
+        Double discountAmount = (Double) request.getAttribute("discountAmount");
+        Double finalTotal = (Double) request.getAttribute("finalTotal");
+        String discountDescription = (String) request.getAttribute("discountDescription");
     %>
 
     <%
@@ -85,7 +87,12 @@
             %>
         </table>
 
-        <div class="total">Total: €<%= total %></div>
+        <div class="summary">
+            <p><strong>Subtotal:</strong> €<%= subtotal %></p>
+            <p><strong>Discount logic:</strong> <%= discountDescription %></p>
+            <p><strong>Discount amount:</strong> €<%= discountAmount %></p>
+            <p><strong>Final Total:</strong> €<%= finalTotal %></p>
+        </div>
 
         <form method="post" action="<%= request.getContextPath() %>/checkout">
             <button class="checkout-btn" type="submit">Checkout</button>

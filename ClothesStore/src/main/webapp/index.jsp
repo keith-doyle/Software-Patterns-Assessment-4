@@ -28,7 +28,16 @@
         <%
             } else {
         %>
-            <span>Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)</span>
+            <span>
+    Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)
+    <%
+        if ("CUSTOMER".equals(loggedInUser.getRole())) {
+    %>
+        - Loyalty Points: <%= loggedInUser.getLoyaltyPoints() %>
+    <%
+        }
+    %>
+</span>
 
             <%
                 if ("ADMIN".equals(loggedInUser.getRole())) {
