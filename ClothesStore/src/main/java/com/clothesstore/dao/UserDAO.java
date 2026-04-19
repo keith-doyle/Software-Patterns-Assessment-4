@@ -138,4 +138,38 @@ public class UserDAO {
 
         return false;
     }
+    public java.util.List<User> getAllCustomers() {
+        java.util.List<User> customers = new java.util.ArrayList<>();
+
+        String sql = """
+            SELECT * FROM users
+            WHERE role = 'CUSTOMER'
+            ORDER BY created_at DESC
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                user.setAddress(rs.getString("address"));
+                user.setPaymentMethod(rs.getString("payment_method"));
+                user.setLoyaltyPoints(rs.getInt("loyalty_points"));
+                user.setCreatedAt(rs.getTimestamp("created_at"));
+                customers.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return customers;
+    }
+    
 }

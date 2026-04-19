@@ -73,4 +73,7 @@ public class ProductService {
     public double getAverageRatingFromReviews(int productId) {
         return productDAO.getAverageRatingFromReviews(productId);
     }
+    public boolean increaseStock(int productId, int quantity) {
+        return productDAO.increaseStock(productId, quantity);
+    }
 }

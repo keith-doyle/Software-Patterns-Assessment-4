@@ -174,4 +174,30 @@ public class OrderDAO {
         order.setCreatedAt(rs.getTimestamp("created_at"));
         return order;
     }
+    public java.util.List<Order> getOrdersForAdminByUserId(int userId) {
+        java.util.List<Order> orders = new java.util.ArrayList<>();
+
+        String sql = """
+            SELECT * FROM orders
+            WHERE user_id = ?
+            ORDER BY created_at DESC
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, userId);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    orders.add(mapRowToOrder(rs));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return orders;
+    }
 }

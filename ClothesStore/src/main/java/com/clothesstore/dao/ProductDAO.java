@@ -388,4 +388,25 @@ public class ProductDAO {
         product.setActive(rs.getBoolean("active"));
         return product;
     }
+    public boolean increaseStock(int productId, int quantity) {
+        String sql = """
+            UPDATE products
+            SET stock_quantity = stock_quantity + ?
+            WHERE product_id = ?
+            """;
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, quantity);
+            statement.setInt(2, productId);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
