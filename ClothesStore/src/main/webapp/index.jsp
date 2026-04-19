@@ -29,21 +29,22 @@
             } else {
         %>
             <span>
-    Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)
-    <%
-        if ("CUSTOMER".equals(loggedInUser.getRole())) {
-    %>
-        - Loyalty Points: <%= loggedInUser.getLoyaltyPoints() %>
-    <%
-        }
-    %>
-</span>
+                Hello, <%= loggedInUser.getFullName() %> (<%= loggedInUser.getRole() %>)
+                <%
+                    if ("CUSTOMER".equals(loggedInUser.getRole())) {
+                %>
+                    - Loyalty Points: <%= loggedInUser.getLoyaltyPoints() %>
+                <%
+                    }
+                %>
+            </span>
 
             <%
                 if ("ADMIN".equals(loggedInUser.getRole())) {
             %>
                 <a href="<%= request.getContextPath() %>/admin/products">Admin Products</a>
                 <a href="<%= request.getContextPath() %>/admin/orders">Admin Orders</a>
+                <a href="<%= request.getContextPath() %>/admin/customers">Admin Customers</a>
             <%
                 }
                 if ("CUSTOMER".equals(loggedInUser.getRole())) {

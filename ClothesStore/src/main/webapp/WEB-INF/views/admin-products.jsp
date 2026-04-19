@@ -17,6 +17,7 @@
             border: 1px solid #ccc;
             padding: 10px;
             text-align: left;
+            vertical-align: top;
         }
         th {
             background-color: #f2f2f2;
@@ -32,6 +33,9 @@
         }
         .actions a {
             margin-right: 10px;
+        }
+        form {
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -53,7 +57,7 @@
             <th>Price</th>
             <th>Stock</th>
             <th>Active</th>
-            <th>Actions</th>
+            <th>Actions / Replenish</th>
         </tr>
 
         <%
@@ -72,6 +76,12 @@
                 <a href="<%= request.getContextPath() %>/admin/products/edit?id=<%= product.getProductId() %>">Edit</a>
                 <a href="<%= request.getContextPath() %>/admin/products/delete?id=<%= product.getProductId() %>"
                    onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
+
+                <form method="post" action="<%= request.getContextPath() %>/admin/products/replenish">
+                    <input type="hidden" name="productId" value="<%= product.getProductId() %>">
+                    <input type="number" name="quantity" min="1" placeholder="Qty" required style="width:80px;">
+                    <button type="submit">Replenish</button>
+                </form>
             </td>
         </tr>
         <%
