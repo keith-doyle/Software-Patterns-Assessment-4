@@ -3,6 +3,7 @@ package com.clothesstore.controller;
 import com.clothesstore.model.Review;
 import com.clothesstore.model.User;
 import com.clothesstore.service.ReviewService;
+import com.clothesstore.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,19 +20,20 @@ public class AddReviewServlet extends HttpServlet {
             throws ServletException, IOException {
 
         User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null || !"CUSTOMER".equals(loggedInUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
 
         int productId = Integer.parseInt(request.getParameter("productId"));
-        int rating = Integer.parseInt(request.getParameter("rating"));
+        String ratingValue = request.getParameter("rating");
         String comment = request.getParameter("comment");
+
+        if (!ValidationUtil.isRatingValid(ratingValue)) {
+            response.sendRedirect(request.getContextPath() + "/product-details?id=" + productId);
+            return;
+        }
 
         Review review = new Review();
         review.setUserId(loggedInUser.getUserId());
         review.setProductId(productId);
-        review.setRating(rating);
+        review.setRating(Integer.parseInt(ratingValue));
         review.setComment(comment);
 
         reviewService.addReview(review);

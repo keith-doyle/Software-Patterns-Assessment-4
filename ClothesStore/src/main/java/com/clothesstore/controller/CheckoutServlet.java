@@ -20,10 +20,6 @@ public class CheckoutServlet extends HttpServlet {
             throws ServletException, IOException {
 
         User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null || !"CUSTOMER".equals(loggedInUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
 
         HttpSession session = request.getSession();
         List<CartItem> cart = (List<CartItem>) session.getAttribute("cart");
@@ -40,7 +36,6 @@ public class CheckoutServlet extends HttpServlet {
             request.setAttribute("orderId", orderId);
             request.getRequestDispatcher("/WEB-INF/views/order-success.jsp").forward(request, response);
         } else {
-            request.setAttribute("errorMessage", "Checkout failed. Please try again.");
             response.sendRedirect(request.getContextPath() + "/cart");
         }
     }

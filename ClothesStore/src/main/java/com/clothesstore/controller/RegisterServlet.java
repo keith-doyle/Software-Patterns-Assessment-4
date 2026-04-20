@@ -2,6 +2,7 @@ package com.clothesstore.controller;
 
 import com.clothesstore.dao.UserDAO;
 import com.clothesstore.model.User;
+import com.clothesstore.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,11 +30,23 @@ public class RegisterServlet extends HttpServlet {
         String address = request.getParameter("address");
         String paymentMethod = request.getParameter("paymentMethod");
 
-        if (fullName == null || fullName.isBlank() ||
-            email == null || email.isBlank() ||
-            password == null || password.isBlank()) {
+        if (ValidationUtil.isNullOrBlank(fullName) ||
+            ValidationUtil.isNullOrBlank(email) ||
+            ValidationUtil.isNullOrBlank(password)) {
 
             request.setAttribute("errorMessage", "Full name, email and password are required.");
+            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+            return;
+        }
+
+        if (!ValidationUtil.isValidEmail(email)) {
+            request.setAttribute("errorMessage", "Please enter a valid email address.");
+            request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
+            return;
+        }
+
+        if (password.length() < 6) {
+            request.setAttribute("errorMessage", "Password must be at least 6 characters long.");
             request.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(request, response);
             return;
         }

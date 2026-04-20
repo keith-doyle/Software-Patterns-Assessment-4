@@ -2,6 +2,7 @@ package com.clothesstore.controller;
 
 import com.clothesstore.dao.UserDAO;
 import com.clothesstore.model.User;
+import com.clothesstore.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,6 +26,12 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+
+        if (ValidationUtil.isNullOrBlank(email) || ValidationUtil.isNullOrBlank(password)) {
+            request.setAttribute("errorMessage", "Email and password are required.");
+            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+            return;
+        }
 
         User user = userDAO.loginUser(email, password);
 
