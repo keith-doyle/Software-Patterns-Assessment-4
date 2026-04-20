@@ -1,5 +1,7 @@
 package com.clothesstore.pattern.factory;
 
+import com.clothesstore.pattern.strategy.SortByManufacturerAsc;
+import com.clothesstore.pattern.strategy.SortByManufacturerDesc;
 import com.clothesstore.pattern.strategy.SortByPriceAsc;
 import com.clothesstore.pattern.strategy.SortByPriceDesc;
 import com.clothesstore.pattern.strategy.SortByTitleAsc;
@@ -17,6 +19,8 @@ public class SortStrategyFactory {
             case "titleDesc" -> new SortByTitleDesc();
             case "priceAsc" -> new SortByPriceAsc();
             case "priceDesc" -> new SortByPriceDesc();
+            case "manufacturerAsc" -> new SortByManufacturerAsc();
+            case "manufacturerDesc" -> new SortByManufacturerDesc();
             default -> new SortByTitleAsc();
         };
     }

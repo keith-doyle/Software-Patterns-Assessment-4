@@ -105,21 +105,29 @@ input, select, button {
 			}
 			%>
 		</select> <label>Sort By:</label> <select name="sort">
-			<option value="titleAsc"
-				<%="titleAsc".equals(selectedSort) || selectedSort == null ? "selected" : ""%>>Title
-				A-Z</option>
-			<option value="titleDesc"
-				<%="titleDesc".equals(selectedSort) ? "selected" : ""%>>Title
-				Z-A</option>
-			<option value="priceAsc"
-				<%="priceAsc".equals(selectedSort) ? "selected" : ""%>>Price
-				Low-High</option>
-			<option value="priceDesc"
-				<%="priceDesc".equals(selectedSort) ? "selected" : ""%>>Price
-				High-Low</option>
+			<label>Sort By:</label>
+			<select name="sort">
+				<option value="titleAsc"
+					<%="titleAsc".equals(selectedSort) || selectedSort == null ? "selected" : ""%>>
+					Title A-Z</option>
+				<option value="titleDesc"
+					<%="titleDesc".equals(selectedSort) ? "selected" : ""%>>
+					Title Z-A</option>
+				<option value="priceAsc"
+					<%="priceAsc".equals(selectedSort) ? "selected" : ""%>>
+					Price Low-High</option>
+				<option value="priceDesc"
+					<%="priceDesc".equals(selectedSort) ? "selected" : ""%>>
+					Price High-Low</option>
+				<option value="manufacturerAsc"
+					<%="manufacturerAsc".equals(selectedSort) ? "selected" : ""%>>
+					Manufacturer A-Z</option>
+				<option value="manufacturerDesc"
+					<%="manufacturerDesc".equals(selectedSort) ? "selected" : ""%>>
+					Manufacturer Z-A</option>
 		</select>
 
-		<button type="submit">Apply</button>
+			<button type="submit">Apply</button>
 	</form>
 
 	<%
@@ -129,6 +137,9 @@ input, select, button {
 	%>
 	<div class="product-card">
 		<div class="product-title">
+			<img src="<%=request.getContextPath()%>/<%=product.getImagePath()%>"
+				alt="<%=product.getTitle()%>"
+				style="max-width: 150px; max-height: 150px; display: block; margin-bottom: 10px;">
 			<a
 				href="<%=request.getContextPath()%>/product-details?id=<%=product.getProductId()%>">
 				<%=product.getTitle()%>
