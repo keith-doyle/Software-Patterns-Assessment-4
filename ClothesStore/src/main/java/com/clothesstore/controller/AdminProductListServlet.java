@@ -1,7 +1,6 @@
 package com.clothesstore.controller;
 
 import com.clothesstore.model.Product;
-import com.clothesstore.model.User;
 import com.clothesstore.service.ProductService;
 
 import javax.servlet.ServletException;
@@ -19,14 +18,24 @@ public class AdminProductListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null || !"ADMIN".equals(loggedInUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        String title = request.getParameter("title");
+        String category = request.getParameter("category");
+        String manufacturer = request.getParameter("manufacturer");
+        String sort = request.getParameter("sort");
 
-        List<Product> products = productService.getAllProductsForAdmin();
+        List<Product> products = productService.getFilteredProductsForAdmin(title, category, manufacturer, sort);
+        List<String> categories = productService.getAllCategories();
+        List<String> manufacturers = productService.getAllManufacturers();
+
         request.setAttribute("products", products);
+        request.setAttribute("categories", categories);
+        request.setAttribute("manufacturers", manufacturers);
+
+        request.setAttribute("selectedTitle", title);
+        request.setAttribute("selectedCategory", category);
+        request.setAttribute("selectedManufacturer", manufacturer);
+        request.setAttribute("selectedSort", sort);
+
         request.getRequestDispatcher("/WEB-INF/views/admin-products.jsp").forward(request, response);
     }
 }

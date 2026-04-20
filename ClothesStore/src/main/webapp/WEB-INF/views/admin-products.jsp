@@ -34,8 +34,23 @@
         .actions a {
             margin-right: 10px;
         }
-        form {
+        form.replenish-form {
             margin-top: 8px;
+        }
+        form.filter-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        input, select, button {
+            margin: 8px 10px 8px 0;
+            padding: 8px;
+        }
+        img.product-thumb {
+            max-width: 60px;
+            max-height: 60px;
+            display: block;
         }
     </style>
 </head>
@@ -45,12 +60,69 @@
     <a class="button" href="<%= request.getContextPath() %>/admin/products/add">Add New Product</a>
 
     <%
+        String selectedTitle = (String) request.getAttribute("selectedTitle");
+        String selectedCategory = (String) request.getAttribute("selectedCategory");
+        String selectedManufacturer = (String) request.getAttribute("selectedManufacturer");
+        String selectedSort = (String) request.getAttribute("selectedSort");
+
+        List<String> categories = (List<String>) request.getAttribute("categories");
+        List<String> manufacturers = (List<String>) request.getAttribute("manufacturers");
         List<Product> products = (List<Product>) request.getAttribute("products");
     %>
+
+    <form class="filter-form" method="get" action="<%= request.getContextPath() %>/admin/products">
+        <label>Title:</label>
+        <input type="text" name="title" value="<%= selectedTitle != null ? selectedTitle : "" %>">
+
+        <label>Category:</label>
+        <select name="category">
+            <option value="">All Categories</option>
+            <%
+                if (categories != null) {
+                    for (String category : categories) {
+            %>
+                <option value="<%= category %>" <%= category.equals(selectedCategory) ? "selected" : "" %>>
+                    <%= category %>
+                </option>
+            <%
+                    }
+                }
+            %>
+        </select>
+
+        <label>Manufacturer:</label>
+        <select name="manufacturer">
+            <option value="">All Manufacturers</option>
+            <%
+                if (manufacturers != null) {
+                    for (String manufacturer : manufacturers) {
+            %>
+                <option value="<%= manufacturer %>" <%= manufacturer.equals(selectedManufacturer) ? "selected" : "" %>>
+                    <%= manufacturer %>
+                </option>
+            <%
+                    }
+                }
+            %>
+        </select>
+
+        <label>Sort By:</label>
+        <select name="sort">
+            <option value="titleAsc" <%= "titleAsc".equals(selectedSort) || selectedSort == null ? "selected" : "" %>>Title A-Z</option>
+            <option value="titleDesc" <%= "titleDesc".equals(selectedSort) ? "selected" : "" %>>Title Z-A</option>
+            <option value="priceAsc" <%= "priceAsc".equals(selectedSort) ? "selected" : "" %>>Price Low-High</option>
+            <option value="priceDesc" <%= "priceDesc".equals(selectedSort) ? "selected" : "" %>>Price High-Low</option>
+            <option value="manufacturerAsc" <%= "manufacturerAsc".equals(selectedSort) ? "selected" : "" %>>Manufacturer A-Z</option>
+            <option value="manufacturerDesc" <%= "manufacturerDesc".equals(selectedSort) ? "selected" : "" %>>Manufacturer Z-A</option>
+        </select>
+
+        <button type="submit">Apply</button>
+    </form>
 
     <table>
         <tr>
             <th>ID</th>
+            <th>Image</th>
             <th>Title</th>
             <th>Category</th>
             <th>Manufacturer</th>
@@ -66,6 +138,11 @@
         %>
         <tr>
             <td><%= product.getProductId() %></td>
+            <td>
+                <img class="product-thumb"
+                     src="<%= request.getContextPath() %>/<%= product.getImagePath() %>"
+                     alt="<%= product.getTitle() %>">
+            </td>
             <td><%= product.getTitle() %></td>
             <td><%= product.getCategoryName() %></td>
             <td><%= product.getManufacturerName() %></td>
@@ -77,7 +154,7 @@
                 <a href="<%= request.getContextPath() %>/admin/products/delete?id=<%= product.getProductId() %>"
                    onclick="return confirm('Are you sure you want to delete this product?');">Delete</a>
 
-                <form method="post" action="<%= request.getContextPath() %>/admin/products/replenish">
+                <form class="replenish-form" method="post" action="<%= request.getContextPath() %>/admin/products/replenish">
                     <input type="hidden" name="productId" value="<%= product.getProductId() %>">
                     <input type="number" name="quantity" min="1" placeholder="Qty" required style="width:80px;">
                     <button type="submit">Replenish</button>

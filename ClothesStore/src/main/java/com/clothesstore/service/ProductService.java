@@ -76,4 +76,8 @@ public class ProductService {
     public boolean increaseStock(int productId, int quantity) {
         return productDAO.increaseStock(productId, quantity);
     }
+    public List<Product> getFilteredProductsForAdmin(String title, String category, String manufacturer, String sortOption) {
+        SortStrategy strategy = SortStrategyFactory.getStrategy(sortOption);
+        return productDAO.searchProductsForAdmin(title, category, manufacturer, strategy.getOrderByClause());
+    }
 }

@@ -409,4 +409,55 @@ public class ProductDAO {
 
         return false;
     }
+    public List<Product> searchProductsForAdmin(String title, String category, String manufacturer, String orderByClause) {
+        List<Product> products = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("""
+            SELECT p.product_id, p.title, p.description, p.price, p.stock_quantity,
+                   p.image_path, c.name AS category_name, m.name AS manufacturer_name,
+                   p.average_rating, p.active
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN manufacturers m ON p.manufacturer_id = m.manufacturer_id
+            WHERE 1=1
+            """);
+
+        List<Object> parameters = new ArrayList<>();
+
+        if (title != null && !title.isBlank()) {
+            sql.append(" AND p.title LIKE ?");
+            parameters.add("%" + title + "%");
+        }
+
+        if (category != null && !category.isBlank()) {
+            sql.append(" AND c.name LIKE ?");
+            parameters.add("%" + category + "%");
+        }
+
+        if (manufacturer != null && !manufacturer.isBlank()) {
+            sql.append(" AND m.name = ?");
+            parameters.add(manufacturer);
+        }
+
+        sql.append(" ORDER BY ").append(orderByClause);
+
+        try (Connection connection = DBConnectionManager.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    products.add(mapRowToProduct(rs));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return products;
+    }
 }
