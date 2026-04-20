@@ -43,7 +43,7 @@
         <input type="email" name="email" required>
 
         <label>Password</label>
-        <input type="password" name="password" required>
+        <input type="password" name="password" required minlength="6">
 
         <label>Address</label>
         <textarea name="address" rows="4"></textarea>

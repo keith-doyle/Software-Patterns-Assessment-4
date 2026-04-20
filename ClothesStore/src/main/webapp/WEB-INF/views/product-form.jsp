@@ -59,10 +59,10 @@
         <textarea name="description" rows="4"><%= product != null ? product.getDescription() : "" %></textarea>
 
         <label>Price</label>
-        <input type="number" step="0.01" name="price" required value="<%= product != null ? product.getPrice() : "" %>">
+        <input type="number" step="0.01" name="price" required min="0.01" value="<%= product != null ? product.getPrice() : "" %>">
 
         <label>Stock Quantity</label>
-        <input type="number" name="stockQuantity" required value="<%= product != null ? product.getStockQuantity() : "" %>">
+        <input type="number" name="stockQuantity" required min="0" value="<%= product != null ? product.getStockQuantity() : "" %>">
 
         <label>Image Path</label>
         <input type="text" name="imagePath" value="<%= product != null ? product.getImagePath() : "" %>">

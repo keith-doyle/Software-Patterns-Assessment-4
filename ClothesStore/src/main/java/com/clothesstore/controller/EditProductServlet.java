@@ -1,8 +1,8 @@
 package com.clothesstore.controller;
 
 import com.clothesstore.model.Product;
-import com.clothesstore.model.User;
 import com.clothesstore.service.ProductService;
+import com.clothesstore.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,12 +17,6 @@ public class EditProductServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null || !"ADMIN".equals(loggedInUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
 
         int productId = Integer.parseInt(request.getParameter("id"));
         Product product = productService.getProductById(productId);
@@ -39,23 +33,39 @@ public class EditProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        User loggedInUser = (User) request.getSession().getAttribute("loggedInUser");
-        if (loggedInUser == null || !"ADMIN".equals(loggedInUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/login");
+        String productId = request.getParameter("productId");
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String price = request.getParameter("price");
+        String stockQuantity = request.getParameter("stockQuantity");
+        String imagePath = request.getParameter("imagePath");
+        String categoryName = request.getParameter("category");
+        String manufacturerName = request.getParameter("manufacturer");
+
+        if (ValidationUtil.isNullOrBlank(productId) ||
+            ValidationUtil.isNullOrBlank(title) ||
+            !ValidationUtil.isPositiveDouble(price) ||
+            !ValidationUtil.isNonNegativeInteger(stockQuantity) ||
+            ValidationUtil.isNullOrBlank(categoryName) ||
+            ValidationUtil.isNullOrBlank(manufacturerName)) {
+
+            request.setAttribute("errorMessage", "Please enter valid product details.");
+            request.setAttribute("categories", productService.getAllCategories());
+            request.setAttribute("manufacturers", productService.getAllManufacturers());
+            request.setAttribute("formAction", request.getContextPath() + "/admin/products/edit");
+            request.setAttribute("formTitle", "Edit Product");
+            request.getRequestDispatcher("/WEB-INF/views/product-form.jsp").forward(request, response);
             return;
         }
 
         Product product = new Product();
-        product.setProductId(Integer.parseInt(request.getParameter("productId")));
-        product.setTitle(request.getParameter("title"));
-        product.setDescription(request.getParameter("description"));
-        product.setPrice(Double.parseDouble(request.getParameter("price")));
-        product.setStockQuantity(Integer.parseInt(request.getParameter("stockQuantity")));
-        product.setImagePath(request.getParameter("imagePath"));
+        product.setProductId(Integer.parseInt(productId));
+        product.setTitle(title);
+        product.setDescription(description);
+        product.setPrice(Double.parseDouble(price));
+        product.setStockQuantity(Integer.parseInt(stockQuantity));
+        product.setImagePath(imagePath);
         product.setActive("on".equals(request.getParameter("active")));
-
-        String categoryName = request.getParameter("category");
-        String manufacturerName = request.getParameter("manufacturer");
 
         boolean success = productService.updateProduct(product, categoryName, manufacturerName);
 
